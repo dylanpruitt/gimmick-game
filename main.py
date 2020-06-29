@@ -1,5 +1,6 @@
 import pygame
 from entities.entity import Entity
+from weapons.switcheroo import Switcheroo
 
 pygame.init()
 
@@ -17,6 +18,8 @@ class Game:
         self.looping = True
         self.player = Entity(240, 240)
         self.player.isPlayer = True
+        self.test_enemy = Entity(100,380)
+        self.switcheroo = Switcheroo()
         self.clock = pygame.time.Clock()
 
 
@@ -50,6 +53,7 @@ def loop():
             screen.blit(text, (150, 150))
 
             update_entity(game.player)
+            update_entity(game.test_enemy)
 
             pygame.display.flip()
 
@@ -67,6 +71,11 @@ def loop():
                         game.player.dy += game.player.move_speed
                     if event.key == pygame.K_d:
                         game.player.dx += game.player.move_speed
+                    if event.key == pygame.K_1:
+                        targets = []
+                        targets.append(game.player)
+                        targets.append(game.test_enemy)
+                        game.switcheroo.use(game.player, targets)
                 elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_w:
                         game.player.dy = 0
