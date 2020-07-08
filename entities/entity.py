@@ -7,5 +7,5 @@ class Entity:
         self.health = 1
         self.width = 20
         self.height = 20
-        self.move_speed = 1
+        self.move_speed = 0.5
         self.isPlayer = False
