@@ -1,5 +1,5 @@
 import pygame
-from entities.entity import Entity
+from entities.entity import Entity, Player
 from weapons.switcheroo import Switcheroo
 from weapons.magnet import Magnet
 
@@ -8,6 +8,7 @@ pygame.init()
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
+BLUE = (0, 0, 255)
 
 size = (500, 500)
 screen = pygame.display.set_mode(size)
@@ -17,11 +18,12 @@ pygame.display.set_caption("Gimmick Game")
 class Game:
     def __init__(self):
         self.looping = True
-        self.player = Entity(240, 240)
-        self.player.isPlayer = True
-        self.test_enemy = Entity(100, 380)
-        self.switcheroo = Switcheroo()
-        self.magnet = Magnet()
+        self.player = Player(240, 240)
+        self.player.weapons.append(Switcheroo())
+        self.player.weapons.append(Magnet())
+        self.entities = []
+        self.entities.append(self.player)
+        self.entities.append(Entity(100, 380))
         self.clock = pygame.time.Clock()
 
 
@@ -59,12 +61,15 @@ def loop():
 
         screen.fill(BLACK)
 
-        font = pygame.font.Font(None, 75)
-        text = font.render(str(pygame.time.get_ticks()), 1, RED)
-        screen.blit(text, (150, 150))
+        font = pygame.font.Font(None, 30)
+        text = font.render("1: Switcheroo", 1, RED)
+        screen.blit(text, (15, 15))
 
-        update_entity(game.player)
-        update_entity(game.test_enemy)
+        text = font.render("2: Magnet", 1, RED)
+        screen.blit(text, (15, 35))
+
+        for entity in game.entities:
+            update_entity(entity)
 
         pygame.display.flip()
 
@@ -78,10 +83,7 @@ def loop():
             if key == "d":
                 game.player.dx += game.player.move_speed
             if key == "2":
-                targets = []
-                targets.append(game.player)
-                targets.append(game.test_enemy)
-                game.magnet.use(game.player, targets)
+                game.player.weapons[1].use(game.player, game.entities)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -100,10 +102,7 @@ def loop():
                     keys_held.append("d")
                     game.player.dx += game.player.move_speed
                 if event.key == pygame.K_1:
-                    targets = []
-                    targets.append(game.player)
-                    targets.append(game.test_enemy)
-                    game.switcheroo.use(game.player, targets)
+                    game.player.weapons[0].use(game.player, game.entities)
                 if event.key == pygame.K_2:
                     keys_held.append("2")
 

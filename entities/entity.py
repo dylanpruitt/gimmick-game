@@ -9,3 +9,10 @@ class Entity:
         self.height = 20
         self.move_speed = 0.5
         self.isPlayer = False
+
+
+class Player(Entity):
+    def __init__(self, x, y):
+        super(Player, self).__init__(x, y)
+        self.isPlayer = True
+        self.weapons = []
