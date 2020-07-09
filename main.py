@@ -2,6 +2,7 @@ import pygame
 from entities.entity import Entity, Player
 from weapons.switcheroo import Switcheroo
 from weapons.magnet import Magnet
+from objects.kill_part import KillPart
 
 pygame.init()
 
@@ -24,6 +25,9 @@ class Game:
         self.entities = []
         self.entities.append(self.player)
         self.entities.append(Entity(100, 380))
+        self.entities.append(Entity(300, 380))
+        self.objects = []
+        self.objects.append(KillPart(350, 100))
         self.clock = pygame.time.Clock()
 
 
@@ -41,6 +45,10 @@ def update_entity(entity):
         entity.dy -= 0.3
     if entity.dy < 0:
         entity.dy += 0.3
+    for object in game.objects:
+        if entity.is_colliding_with(object):
+            object.on_touch(entity)
+
     render_entity(entity)
 
 
@@ -51,6 +59,24 @@ def render_entity(entity):
     else:
         COLOR = RED
     pygame.draw.rect(screen, COLOR, (entity.x, entity.y, entity.width, entity.height))
+    
+
+def update_object(object):
+    object.x = round(object.x + object.dx)
+    object.y = round(object.y + object.dy)
+    if object.dx > 0:
+        object.dx -= 0.3
+    if object.dx < 0:
+        object.dx += 0.3
+    if object.dy > 0:
+        object.dy -= 0.3
+    if object.dy < 0:
+        object.dy += 0.3
+    render_object(object)
+    
+    
+def render_object(object):
+    pygame.draw.rect(screen, object.color, (object.x, object.y, object.width, object.height))
 
 
 def loop():
@@ -68,19 +94,27 @@ def loop():
         text = font.render("2: Magnet", 1, RED)
         screen.blit(text, (15, 35))
 
+        temp_entities = []
         for entity in game.entities:
             update_entity(entity)
+            if entity.health > 0:
+                temp_entities.append(entity)
+
+        game.entities = temp_entities
+
+        for object in game.objects:
+            update_object(object)
 
         pygame.display.flip()
 
         for key in keys_held:
-            if key == "w":
+            if key == "up":
                 game.player.dy -= game.player.move_speed
-            if key == "a":
+            if key == "left":
                 game.player.dx -= game.player.move_speed
-            if key == "s":
+            if key == "down":
                 game.player.dy += game.player.move_speed
-            if key == "d":
+            if key == "right":
                 game.player.dx += game.player.move_speed
             if key == "2":
                 game.player.weapons[1].use(game.player, game.entities)
@@ -91,15 +125,15 @@ def loop():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     game.looping = False
-                if event.key == pygame.K_w:
-                    keys_held.append("w")
-                if event.key == pygame.K_a:
-                    keys_held.append("a")
-                if event.key == pygame.K_s:
-                    keys_held.append("s")
+                if event.key == pygame.K_UP:
+                    keys_held.append("up")
+                if event.key == pygame.K_LEFT:
+                    keys_held.append("left")
+                if event.key == pygame.K_DOWN:
+                    keys_held.append("down")
                     game.player.dy += game.player.move_speed
-                if event.key == pygame.K_d:
-                    keys_held.append("d")
+                if event.key == pygame.K_RIGHT:
+                    keys_held.append("right")
                     game.player.dx += game.player.move_speed
                 if event.key == pygame.K_1:
                     game.player.weapons[0].use(game.player, game.entities)
@@ -107,14 +141,14 @@ def loop():
                     keys_held.append("2")
 
             elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_w:
-                    keys_held.remove("w")
-                if event.key == pygame.K_a:
-                    keys_held.remove("a")
-                if event.key == pygame.K_s:
-                    keys_held.remove("s")
-                if event.key == pygame.K_d:
-                    keys_held.remove("d")
+                if event.key == pygame.K_UP:
+                    keys_held.remove("up")
+                if event.key == pygame.K_LEFT:
+                    keys_held.remove("left")
+                if event.key == pygame.K_DOWN:
+                    keys_held.remove("down")
+                if event.key == pygame.K_RIGHT:
+                    keys_held.remove("right")
                 if event.key == pygame.K_2:
                     keys_held.remove("2")
 

@@ -5,7 +5,7 @@ class Magnet(Weapon):
     def __init__(self):
         self.name = "Magnet"
         self.cooldown = 0
-        self.attraction_force = 0.7
+        self.attraction_force = 0.5
 
     def use(self, user, targets):
         for target in targets:

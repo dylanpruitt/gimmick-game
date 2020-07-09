@@ -10,6 +10,13 @@ class Entity:
         self.move_speed = 0.5
         self.isPlayer = False
 
+    def is_colliding_with(self, other):
+        if (other.x <= self.x <= other.x + other.width) \
+                and (other.y <= self.y <= other.y + other.height):
+            return True
+        else:
+            return False
+
 
 class Player(Entity):
     def __init__(self, x, y):
