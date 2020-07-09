@@ -28,6 +28,8 @@ class Game:
         self.entities.append(Entity(300, 380))
         self.objects = []
         self.objects.append(KillPart(350, 100))
+        self.objects.append(KillPart(160, 200))
+        self.objects.append(KillPart(240, 400))
         self.clock = pygame.time.Clock()
 
 
@@ -39,12 +41,20 @@ def update_entity(entity):
     entity.y = round(entity.y + entity.dy)
     if entity.dx > 0:
         entity.dx -= 0.3
+        if entity.x > 500:
+            entity.x = 0
     if entity.dx < 0:
         entity.dx += 0.3
+        if entity.x < 0:
+            entity.x = 500
     if entity.dy > 0:
         entity.dy -= 0.3
+        if entity.y > 500:
+            entity.y = 0
     if entity.dy < 0:
         entity.dy += 0.3
+        if entity.y < 0:
+            entity.y = 500
     for object in game.objects:
         if entity.is_colliding_with(object):
             object.on_touch(entity)
@@ -66,12 +76,20 @@ def update_object(object):
     object.y = round(object.y + object.dy)
     if object.dx > 0:
         object.dx -= 0.3
+        if object.x > 500:
+            object.x = 0
     if object.dx < 0:
         object.dx += 0.3
+        if object.x < 0:
+            object.x = 500
     if object.dy > 0:
         object.dy -= 0.3
+        if object.y > 500:
+            object.y = 0
     if object.dy < 0:
         object.dy += 0.3
+        if object.y < 0:
+            object.y = 500
     render_object(object)
     
     
@@ -93,6 +111,9 @@ def loop():
 
         text = font.render("2: Magnet", 1, RED)
         screen.blit(text, (15, 35))
+
+        text = font.render(str(keys_held), 1, RED)
+        screen.blit(text, (300, 15))
 
         temp_entities = []
         for entity in game.entities:

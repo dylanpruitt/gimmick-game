@@ -6,4 +6,4 @@ class Weapon:
         pass
 
     def use(self, user, targets):
-        raise NotImplementedError("ai not implemented")
+        raise NotImplementedError("not implemented")
